@@ -1,634 +1,299 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
-  <title>English Typing Practice Platform</title>
+  <title>炫彩英打挑戰王</title>
   <style>
-    * { box-sizing: border-box; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    /* 國中生喜歡的活潑鮮豔配色 */
+    :root {
+      --bg-color: #FFDEE9;
+      --bg-gradient: linear-gradient(45deg, #FFDEE9 0%, #B5FFFC 100%);
+      --container-bg: #ffffff;
+      --primary-color: #FF477E; /* 活力粉 */
+      --secondary-color: #00D2FF; /* 天空藍 */
+      --accent-color: #FFD166; /* 亮黃 */
+      --text-color: #2B2D42;
+      --success-color: #06D6A0;
+    }
+
+    * { box-sizing: border-box; font-family: 'Segoe UI', "Microsoft JhengHei", sans-serif; }
+    
     body {
       margin: 0;
       padding: 20px;
-      background: #0f172a;
-      color: #e5e7eb;
+      background: var(--bg-color);
+      background-image: var(--bg-gradient);
+      color: var(--text-color);
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
     }
+
     .container {
-      width: 960px;
+      width: 900px;
       max-width: 100%;
-      background: #020617;
-      border-radius: 18px;
-      padding: 18px 22px 24px;
-      box-shadow: 0 22px 45px rgba(0,0,0,0.7);
-      border: 1px solid #1f2933;
+      background: var(--container-bg);
+      border-radius: 30px;
+      padding: 30px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+      border: 4px solid var(--primary-color);
     }
+
     h1 {
-      margin: 0 0 4px;
-      font-size: 24px;
+      margin: 0;
+      font-size: 32px;
+      color: var(--primary-color);
+      text-shadow: 2px 2px 0px var(--accent-color);
       text-align: center;
-    }
-    .subtitle {
-      text-align: center;
-      font-size: 13px;
-      color: #9ca3af;
-      margin-bottom: 14px;
     }
 
-    .mode-row, .top-row {
+    .user-box {
+      background: #f0f4f8;
+      padding: 15px;
+      border-radius: 15px;
+      margin-bottom: 15px;
       display: flex;
-      justify-content: space-between;
+      gap: 10px;
       align-items: center;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 10px;
-    }
-    .mode-group, .difficulty-group {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-    .chip {
-      padding: 5px 10px;
-      border-radius: 999px;
-      border: 1px solid #4b5563;
-      background: #020617;
-      font-size: 12px;
-      cursor: pointer;
-      color: #e5e7eb;
-    }
-    .chip.active {
-      background: #38bdf8;
-      color: #0f172a;
-      border-color: #7dd3fc;
+      justify-content: center;
     }
 
-    .target-label {
-      font-size: 13px;
-      color: #9ca3af;
-    }
-    .target-word {
-      font-size: 22px;
-      letter-spacing: 1px;
-      margin-top: 4px;
-      padding: 6px 10px;
+    .user-input {
+      padding: 8px 15px;
       border-radius: 10px;
-      background: #020617;
-      border: 1px solid #1f2937;
-    }
-
-    .typing-area {
-      margin-top: 10px;
-    }
-    .typing-input {
-      width: 100%;
-      padding: 10px 12px;
-      border-radius: 10px;
-      border: 2px solid #4b5563;
-      background: #020617;
-      color: #e5e7eb;
-      font-size: 18px;
+      border: 2px solid var(--secondary-color);
       outline: none;
     }
-    .typing-input:focus {
-      border-color: #38bdf8;
-      box-shadow: 0 0 0 1px #38bdf8;
-    }
-    .hint {
-      font-size: 12px;
-      color: #9ca3af;
-      margin-top: 4px;
+
+    .mode-row {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 15px;
     }
 
-    .status {
-      margin-top: 8px;
-      font-size: 14px;
-      min-height: 20px;
+    .chip {
+      padding: 8px 18px;
+      border-radius: 50px;
+      border: 2px solid var(--secondary-color);
+      background: white;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .chip.active {
+      background: var(--secondary-color);
+      color: white;
+    }
+
+    .target-word {
+      font-size: 36px;
+      font-weight: bold;
+      text-align: center;
+      color: var(--primary-color);
+      background: #fffafa;
+      padding: 20px;
+      border-radius: 15px;
+      border: 3px dashed var(--secondary-color);
+      margin: 15px 0;
+    }
+
+    .typing-input {
+      width: 100%;
+      padding: 15px;
+      border-radius: 15px;
+      border: 3px solid #ddd;
+      font-size: 24px;
+      text-align: center;
+      outline: none;
+      transition: 0.3s;
+    }
+
+    .typing-input:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 15px rgba(255, 71, 126, 0.2);
     }
 
     .stats {
-      margin-top: 8px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px 24px;
-      font-size: 13px;
-      color: #cbd5f5;
-    }
-    .stats span.label {
-      color: #9ca3af;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      background: var(--secondary-color);
+      padding: 15px;
+      border-radius: 15px;
+      color: white;
+      margin-top: 20px;
+      font-weight: bold;
+      text-align: center;
     }
 
-    .actions {
-      margin-top: 10px;
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
     .btn {
-      padding: 6px 12px;
-      border-radius: 999px;
+      padding: 12px 25px;
+      border-radius: 50px;
       border: none;
-      font-size: 13px;
+      font-size: 16px;
+      font-weight: bold;
       cursor: pointer;
-      background: #38bdf8;
-      color: #0f172a;
-    }
-    .btn.secondary {
-      background: #111827;
-      color: #e5e7eb;
-      border: 1px solid #4b5563;
-    }
-    .btn:disabled {
-      opacity: 0.5;
-      cursor: default;
+      background: var(--primary-color);
+      color: white;
+      box-shadow: 0 4px 0 #d63366;
+      transition: 0.2s;
     }
 
-    .keyboard {
-      margin-top: 16px;
-      padding: 10px 8px 6px;
-      background: #020617;
-      border-radius: 14px;
-      border: 1px solid #1f2937;
-    }
-    .kb-row {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 4px;
-    }
-    .key {
-      width: 46px;
-      height: 46px;
-      margin: 2px;
-      border-radius: 8px;
-      background: #111827;
-      border: 1px solid #374151;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #e5e7eb;
-      font-size: 15px;
-      box-shadow: 0 2px 0 rgba(0,0,0,0.6);
-      transition: all 0.08s;
-      user-select: none;
-    }
-    .key.wide { width: 80px; }
-    .key.space { width: 260px; }
-    .key.active {
-      background: #22c55e;
-      border-color: #bbf7d0;
-      color: #022c22;
-      transform: translateY(1px);
-      box-shadow: 0 1px 0 rgba(0,0,0,0.7);
-    }
+    .btn:active { transform: translateY(3px); box-shadow: none; }
 
-    @media (max-width: 720px) {
-      .container { padding: 14px; }
-      .key { width: 34px; height: 40px; font-size: 12px; }
-      .key.space { width: 180px; }
-    }
+    /* 鍵盤樣式微調 */
+    .keyboard { margin-top: 20px; background: #eee; padding: 10px; border-radius: 15px; }
+    .key { background: white; color: #333; border: 1px solid #ccc; width: 40px; height: 40px; margin: 2px; border-radius: 5px; display: inline-flex; align-items: center; justify-content: center; font-weight: bold; }
+    .key.active { background: var(--success-color); color: white; transform: scale(0.95); }
   </style>
 </head>
 <body>
+
 <div class="container">
-  <h1>English Typing Practice Platform</h1>
-  <div class="subtitle">看著螢幕鍵盤練英打，支援練習模式與 60 秒測驗模式。</div>
+  <h1>🚀 炫彩英打挑戰王</h1>
+  
+  <div class="user-box">
+    <label>玩家名稱：</label>
+    <input type="text" id="userName" class="user-input" placeholder="輸入你的綽號..." value="匿名英雄">
+    <span id="recordDisplay" style="font-weight:bold; color:var(--primary-color)">最高紀錄: -- WPM</span>
+  </div>
 
   <div class="mode-row">
-    <div class="mode-group">
-      <span class="target-label">模式：</span>
-      <button class="chip active" id="modePractice">練習模式</button>
-      <button class="chip" id="modeTest">60 秒測驗模式</button>
-    </div>
-    <div class="difficulty-group">
-      <span class="target-label">題型：</span>
-      <button class="chip active" id="diffWords">短單字</button>
-      <button class="chip" id="diffLong">長單字</button>
-      <button class="chip" id="diffSentences">短句子</button>
-    </div>
+    <button class="chip active" id="modePractice">練習模式</button>
+    <button class="chip" id="modeTest">60秒測驗</button>
   </div>
 
-  <div class="top-row">
-    <div style="flex:1; min-width: 200px;">
-      <div class="target-label">請依照下列文字輸入：</div>
-      <div id="targetWord" class="target-word">hello</div>
-    </div>
-  </div>
+  <div class="target-word" id="targetWord">Ready?</div>
 
-  <div class="typing-area">
-    <input id="typingInput" class="typing-input" type="text" autocomplete="off"
-           placeholder="請依照上方文字輸入，按 Enter 送出答案…" />
-    <div class="hint">
-      鍵盤：實際按鍵盤即可，螢幕上的按鍵會同步亮起並有按鍵音效。Enter 送出，系統會判斷正確 / 錯誤。
-    </div>
-  </div>
+  <input id="typingInput" class="typing-input" type="text" autocomplete="off" placeholder="在此開始輸入...">
 
-  <div id="status" class="status">狀態：練習模式，請開始輸入。</div>
+  <div id="status" style="text-align:center; margin-top:10px; font-weight:bold;">準備好就開始打字吧！</div>
 
   <div class="stats">
-    <div><span class="label">時間：</span><span id="timeStat">0.0 s</span></div>
-    <div><span class="label">輸入字元：</span><span id="charsStat">0</span></div>
-    <div><span class="label">正確題數：</span><span id="correctStat">0</span> / <span id="totalStat">0</span></div>
-    <div><span class="label">正確率：</span><span id="accuracyStat">100%</span></div>
-    <div><span class="label">WPM：</span><span id="wpmStat">0.0</span></div>
+    <div>時間: <span id="timeStat">0s</span></div>
+    <div>正確數: <span id="correctStat">0</span></div>
+    <div>速度: <span id="wpmStat">0</span> WPM</div>
   </div>
 
-  <div class="actions">
-    <button class="btn" id="nextBtn">換下一題</button>
-    <button class="btn secondary" id="resetBtn">重設統計</button>
-    <button class="btn" id="startTestBtn" style="display:none;">開始測驗 (60 秒)</button>
-  </div>
-
-  <!-- On-screen keyboard -->
-  <div class="keyboard" id="keyboard">
-    <div class="kb-row">
-      <div class="key" data-key="`">`</div>
-      <div class="key" data-key="1">1</div>
-      <div class="key" data-key="2">2</div>
-      <div class="key" data-key="3">3</div>
-      <div class="key" data-key="4">4</div>
-      <div class="key" data-key="5">5</div>
-      <div class="key" data-key="6">6</div>
-      <div class="key" data-key="7">7</div>
-      <div class="key" data-key="8">8</div>
-      <div class="key" data-key="9">9</div>
-      <div class="key" data-key="0">0</div>
-      <div class="key wide" data-key="-">-</div>
-      <div class="key wide" data-key="=">=</div>
-    </div>
-    <div class="kb-row">
-      <div class="key wide" data-key="Tab">Tab</div>
-      <div class="key" data-key="q">Q</div>
-      <div class="key" data-key="w">W</div>
-      <div class="key" data-key="e">E</div>
-      <div class="key" data-key="r">R</div>
-      <div class="key" data-key="t">T</div>
-      <div class="key" data-key="y">Y</div>
-      <div class="key" data-key="u">U</div>
-      <div class="key" data-key="i">I</div>
-      <div class="key" data-key="o">O</div>
-      <div class="key" data-key="p">P</div>
-      <div class="key wide" data-key="[">[</div>
-      <div class="key wide" data-key="]">]</div>
-    </div>
-    <div class="kb-row">
-      <div class="key wide" data-key="CapsLock">Caps</div>
-      <div class="key" data-key="a">A</div>
-      <div class="key" data-key="s">S</div>
-      <div class="key" data-key="d">D</div>
-      <div class="key" data-key="f">F</div>
-      <div class="key" data-key="g">G</div>
-      <div class="key" data-key="h">H</div>
-      <div class="key" data-key="j">J</div>
-      <div class="key" data-key="k">K</div>
-      <div class="key" data-key="l">L</div>
-      <div class="key wide" data-key=";">;</div>
-      <div class="key wide" data-key="'">'</div>
-    </div>
-    <div class="kb-row">
-      <div class="key wide" data-key="ShiftLeft">Shift</div>
-      <div class="key" data-key="z">Z</div>
-      <div class="key" data-key="x">X</div>
-      <div class="key" data-key="c">C</div>
-      <div class="key" data-key="v">V</div>
-      <div class="key" data-key="b">B</div>
-      <div class="key" data-key="n">N</div>
-      <div class="key" data-key="m">M</div>
-      <div class="key wide" data-key=",">,</div>
-      <div class="key wide" data-key=".">.</div>
-      <div class="key wide" data-key="/">/</div>
-      <div class="key wide" data-key="ShiftRight">Shift</div>
-    </div>
-    <div class="kb-row">
-      <div class="key wide" data-key="Control">Ctrl</div>
-      <div class="key wide" data-key="Alt">Alt</div>
-      <div class="key space" data-key=" ">Space</div>
-      <div class="key wide" data-key="AltGraph">Alt</div>
-      <div class="key wide" data-key="ControlRight">Ctrl</div>
-    </div>
+  <div class="mode-row" style="margin-top:20px;">
+    <button class="btn" id="startTestBtn" style="display:none; background: var(--success-color); box-shadow: 0 4px 0 #059669;">開始挑戰！</button>
+    <button class="btn" id="resetBtn">重新練習</button>
   </div>
 </div>
 
 <script>
-/* --------------------------
-   題庫：短單字 / 長單字 / 句子
---------------------------- */
+// --- 這裡放入你的 Apps Script 部署後的 Web App URL ---
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxIRI8AD4bNIc1KNubEMicnzOkbLPvMC-wjv4MpPmE4vVsi-Ikz7sQygvgPdqAouEc7/exec";
+
 const wordLists = {
-  words: [
-    "hello","apple","dog","cat","school","table","chair","phone",
-    "music","happy","water","turtle","fox","island","class","game"
-  ],
-  long: [
-    "computer","keyboard","internet","chocolate","elephant","capybara",
-    "excellent","practice","language","mountain","umbrella","favorite"
-  ],
-  sentences: [
-    "good morning",
-    "how are you",
-    "nice to meet you",
-    "see you later",
-    "thank you very much",
-    "english typing practice",
-    "i like computer games",
-    "this is my favorite song"
-  ]
+  words: ["apple", "banana", "cherry", "dragon", "elephant", "flower", "guitar", "happy", "island", "jungle"],
+  // 可自行擴充...
 };
 
-/* --------------------------
-   DOM 元素
---------------------------- */
-const targetEl = document.getElementById("targetWord");
-const inputEl = document.getElementById("typingInput");
-const statusEl = document.getElementById("status");
-const timeStatEl = document.getElementById("timeStat");
-const charsStatEl = document.getElementById("charsStat");
-const correctStatEl = document.getElementById("correctStat");
-const totalStatEl = document.getElementById("totalStat");
-const accuracyStatEl = document.getElementById("accuracyStat");
-const wpmStatEl = document.getElementById("wpmStat");
-const nextBtn = document.getElementById("nextBtn");
-const resetBtn = document.getElementById("resetBtn");
-const startTestBtn = document.getElementById("startTestBtn");
-
-const modePracticeBtn = document.getElementById("modePractice");
-const modeTestBtn = document.getElementById("modeTest");
-const diffWordsBtn = document.getElementById("diffWords");
-const diffLongBtn = document.getElementById("diffLong");
-const diffSentencesBtn = document.getElementById("diffSentences");
-
-/* --------------------------
-   狀態
---------------------------- */
-let mode = "practice"; // "practice" | "test"
-let difficulty = "words"; // "words" | "long" | "sentences"
+let mode = "practice";
 let running = false;
 let startTime = null;
 let elapsed = 0;
-const TEST_DURATION = 60; // 秒
+let stats = { chars: 0, correct: 0, total: 0 };
+let bestWPM = 0;
 
-let stats = {
-  chars: 0,
-  errors: 0,
-  correctWords: 0,
-  totalWords: 0
-};
+const targetEl = document.getElementById("targetWord");
+const inputEl = document.getElementById("typingInput");
+const userNameEl = document.getElementById("userName");
+const wpmStatEl = document.getElementById("wpmStat");
 
-/* --------------------------
-   音效：一個短 click，用不同 pitch
---------------------------- */
-const clickSoundData =
-  "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAIlYAAESsAAACABAAZGF0YRAAAAAA/////wAAAP///wD///8A";
-
-const audioPool = [];
-for (let i = 0; i < 12; i++) {
-  const a = new Audio(clickSoundData);
-  audioPool.push(a);
-}
-function playSound(playbackRate, volume) {
-  const audio = audioPool.find(a => a.paused);
-  const a = audio || audioPool[0];
-  try {
-    a.pause();
-    a.currentTime = 0;
-  } catch (e) {}
-  a.playbackRate = playbackRate;
-  a.volume = volume;
-  a.play();
-}
-function playKeyClick() { playSound(1.0, 0.35); }
-function playCorrect() { playSound(1.4, 0.5); }
-function playError() { playSound(0.75, 0.5); }
-
-/* --------------------------
-   題目相關
---------------------------- */
 function pickTarget() {
-  const list = wordLists[difficulty] || wordLists.words;
-  const text = list[Math.floor(Math.random() * list.length)];
-  targetEl.textContent = text;
+  const list = wordLists.words;
+  targetEl.textContent = list[Math.floor(Math.random() * list.length)];
   inputEl.value = "";
 }
 
-function resetStats() {
-  stats = { chars: 0, errors: 0, correctWords: 0, totalWords: 0 };
-  if (mode === "practice") {
-    elapsed = 0;
-    startTime = null;
-    running = false;
+// 傳送資料到 Google 試算表
+async function uploadRecord(wpm) {
+  const name = userNameEl.value || "匿名英雄";
+  try {
+    await fetch(SCRIPT_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: name, wpm: wpm, timestamp: new Date() })
+    });
+    console.log("記錄已上傳");
+  } catch (e) {
+    console.error("上傳失敗", e);
   }
-  updateStatsUI();
 }
 
-function updateStatsUI() {
-  timeStatEl.textContent = elapsed.toFixed(1) + " s";
-  charsStatEl.textContent = stats.chars;
-  correctStatEl.textContent = stats.correctWords;
-  totalStatEl.textContent = stats.totalWords;
-  const accuracy = stats.totalWords > 0
-    ? (stats.correctWords / stats.totalWords) * 100
-    : 100;
-  accuracyStatEl.textContent = accuracy.toFixed(1) + "%";
-
+function updateStats() {
   const minutes = elapsed / 60;
-  const wpm = minutes > 0 ? (stats.chars / 5) / minutes : 0;
-  wpmStatEl.textContent = wpm.toFixed(1);
-}
-
-/* --------------------------
-   模式切換
---------------------------- */
-function setMode(newMode) {
-  if (mode === newMode) return;
-  mode = newMode;
-  running = false;
-  elapsed = 0;
-  startTime = null;
-  resetStats();
-
-  modePracticeBtn.classList.toggle("active", mode === "practice");
-  modeTestBtn.classList.toggle("active", mode === "test");
-
-  if (mode === "practice") {
-    startTestBtn.style.display = "none";
-    inputEl.disabled = false;
-    statusEl.textContent = "狀態：練習模式，輸入任意按鍵開始計時。";
-  } else {
-    startTestBtn.style.display = "inline-block";
-    startTestBtn.disabled = false;
-    startTestBtn.textContent = "開始測驗 (60 秒)";
-    inputEl.disabled = true;
-    statusEl.textContent = "狀態：測驗模式，請按「開始測驗」。";
-  }
-  pickTarget();
-}
-
-function setDifficulty(diff) {
-  difficulty = diff;
-  diffWordsBtn.classList.toggle("active", diff === "words");
-  diffLongBtn.classList.toggle("active", diff === "long");
-  diffSentencesBtn.classList.toggle("active", diff === "sentences");
-  pickTarget();
-}
-
-/* --------------------------
-   測驗控制
---------------------------- */
-function startTest() {
-  resetStats();
-  running = true;
-  elapsed = 0;
-  startTime = performance.now();
-  inputEl.disabled = false;
-  inputEl.value = "";
-  inputEl.focus();
-  statusEl.textContent = "狀態：測驗進行中，請盡量快又準！";
-  startTestBtn.disabled = true;
-  startTestBtn.textContent = "測驗進行中…";
-  pickTarget();
+  const wpm = minutes > 0 ? ((stats.chars / 5) / minutes).toFixed(1) : 0;
+  wpmStatEl.textContent = wpm;
+  document.getElementById("timeStat").textContent = elapsed.toFixed(1) + "s";
+  document.getElementById("correctStat").textContent = stats.correct;
+  return wpm;
 }
 
 function endTest() {
   running = false;
   inputEl.disabled = true;
-  statusEl.textContent =
-    "測驗結束！你在 60 秒內輸入了 " +
-    stats.chars + " 字元，WPM 約 " +
-    wpmStatEl.textContent + "，正確率 " +
-    accuracyStatEl.textContent + "。";
-  startTestBtn.disabled = false;
-  startTestBtn.textContent = "重新開始測驗";
+  const finalWPM = updateStats();
+  
+  if (finalWPM > bestWPM) {
+    bestWPM = finalWPM;
+    document.getElementById("recordDisplay").textContent = `最高紀錄: ${bestWPM} WPM`;
+  }
+  
+  document.getElementById("status").textContent = `測驗結束！速度：${finalWPM} WPM`;
+  uploadRecord(finalWPM); // 自動上傳紀錄
 }
 
-/* --------------------------
-   輸入判斷
---------------------------- */
-function handleSubmit() {
-  if (mode === "test" && !running) return; // 測驗還沒開始不接受
+inputEl.addEventListener("input", () => {
   if (!running) {
-    // 練習模式：第一次送出才開始計時
     running = true;
     startTime = performance.now();
   }
-
-  const target = targetEl.textContent.trim();
-  const typed = inputEl.value.trim();
-
-  stats.totalWords++;
-  stats.chars += typed.length;
-
-  if (typed === target) {
-    stats.correctWords++;
-    statusEl.textContent = "✅ 正確！請繼續下一題。";
-    playCorrect();
-  } else {
-    stats.errors++;
-    statusEl.textContent = "❌ 有錯誤，正確答案是：「" + target + "」。";
-    playError();
+  if (inputEl.value.trim() === targetEl.textContent) {
+    stats.correct++;
+    stats.chars += targetEl.textContent.length;
+    pickTarget();
+    updateStats();
   }
+});
 
-  pickTarget();
-  updateStatsUI();
-}
-
-/* --------------------------
-   計時更新 (rAF)
---------------------------- */
-function tick(timestamp) {
-  if (running && startTime != null) {
-    elapsed = (timestamp - startTime) / 1000;
-    if (mode === "test" && elapsed >= TEST_DURATION) {
-      elapsed = TEST_DURATION;
-      updateStatsUI();
+function tick() {
+  if (running) {
+    elapsed = (performance.now() - startTime) / 1000;
+    if (mode === "test" && elapsed >= 60) {
+      elapsed = 60;
       endTest();
     } else {
-      updateStatsUI();
+      updateStats();
+      requestAnimationFrame(tick);
     }
   }
-  requestAnimationFrame(tick);
 }
-requestAnimationFrame(tick);
+setInterval(() => { if(running) tick(); }, 100);
 
-/* --------------------------
-   事件：按鍵高亮 + 音效
---------------------------- */
-function findKeyElement(e) {
-  if (e.key === " ") return document.querySelector('.key[data-key=" "]');
-  if (e.code === "ShiftLeft") return document.querySelector('.key[data-key="ShiftLeft"]');
-  if (e.code === "ShiftRight") return document.querySelector('.key[data-key="ShiftRight"]');
-  if (e.code === "CapsLock") return document.querySelector('.key[data-key="CapsLock"]');
-  if (e.code === "Tab") return document.querySelector('.key[data-key="Tab"]');
-  if (e.code === "ControlLeft") return document.querySelector('.key[data-key="Control"]');
-  if (e.code === "ControlRight") return document.querySelector('.key[data-key="ControlRight"]');
-  if (e.code === "AltLeft" || e.code === "AltRight") return document.querySelector('.key[data-key="Alt"]');
+document.getElementById("modeTest").onclick = () => {
+  mode = "test";
+  document.getElementById("startTestBtn").style.display = "block";
+  inputEl.disabled = true;
+};
 
-  const k = e.key.length === 1 ? e.key.toLowerCase() : e.key;
-  return document.querySelector('.key[data-key="' + k + '"]');
-}
-
-window.addEventListener("keydown", (e) => {
-  const keyEl = findKeyElement(e);
-  if (keyEl) {
-    keyEl.classList.add("active");
-    setTimeout(() => keyEl.classList.remove("active"), 120);
-    playKeyClick();
-  }
-
-  // 練習模式：第一次打字開始計時
-  if (mode === "practice" && !running && document.activeElement === inputEl) {
-    if (e.key.length === 1 || e.key === "Backspace" || e.key === " ") {
-      running = true;
-      startTime = performance.now();
-      statusEl.textContent = "狀態：練習中，請持續輸入。";
-    }
-  }
-});
-
-/* --------------------------
-   Input / Button events
---------------------------- */
-inputEl.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") {
-    e.preventDefault();
-    handleSubmit();
-  }
-});
-
-nextBtn.addEventListener("click", () => {
-  pickTarget();
-  inputEl.value = "";
+document.getElementById("startTestBtn").onclick = () => {
+  stats = { chars: 0, correct: 0, total: 0 };
+  elapsed = 0;
+  running = true;
+  startTime = performance.now();
+  inputEl.disabled = false;
   inputEl.focus();
-});
+  pickTarget();
+};
 
-resetBtn.addEventListener("click", () => {
-  resetStats();
-  statusEl.textContent =
-    mode === "practice"
-      ? "狀態：練習模式，已重設統計，請開始輸入。"
-      : "狀態：測驗模式，已重設統計，請按「開始測驗」。";
-  if (mode === "practice") {
-    inputEl.disabled = false;
-    inputEl.focus();
-  } else {
-    inputEl.disabled = true;
-  }
-});
-
-startTestBtn.addEventListener("click", () => {
-  if (mode === "test") {
-    startTest();
-  }
-});
-
-modePracticeBtn.addEventListener("click", () => setMode("practice"));
-modeTestBtn.addEventListener("click", () => setMode("test"));
-diffWordsBtn.addEventListener("click", () => setDifficulty("words"));
-diffLongBtn.addEventListener("click", () => setDifficulty("long"));
-diffSentencesBtn.addEventListener("click", () => setDifficulty("sentences"));
-
-/* 初始化 */
 pickTarget();
-updateStatsUI();
-inputEl.focus();
 </script>
 </body>
 </html>
