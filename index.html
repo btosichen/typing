@@ -75,7 +75,8 @@
 
     /* 遊戲內元件 */
     .target-word { font-size: 40px; color: var(--primary); margin: 20px; font-weight: bold; }
-    .typing-input { width: 100%; padding: 15px; font-size: 24px; border-radius: 15px; border: 3px solid #ddd; text-align: center; }
+    .typing-input { width: 100%; padding: 15px; font-size: 24px; border-radius: 15px; border: 3px solid #ddd; text-align: center; outline: none; transition: 0.3s; }
+    .typing-input:focus { border-color: var(--primary); box-shadow: 0 0 10px rgba(255, 71, 126, 0.2); }
     .stats { display: flex; justify-content: space-around; background: var(--secondary); color: white; padding: 15px; border-radius: 15px; margin-top: 20px; font-weight: bold; }
   </style>
 </head>
@@ -130,48 +131,111 @@
   let timeLeft = 60;
   let stats = { chars: 0 };
   const words = [
-"apple","banana","orange","grape","peach","melon","lemon","cherry","mango","fruit",
-"dog","cat","bird","fish","tiger","lion","monkey","rabbit","horse","animal",
-"school","student","teacher","class","lesson","homework","subject","exam","test","study",
-"book","pen","pencil","paper","desk","chair","bag","ruler","eraser","notebook",
-"computer","keyboard","mouse","screen","laptop","tablet","internet","website","email","password",
-"game","player","winner","score","level","stage","start","finish","battle","mission",
-"happy","sad","angry","excited","tired","hungry","thirsty","funny","cool","great",
-"morning","afternoon","evening","night","today","tomorrow","yesterday","always","never","sometimes",
-"family","father","mother","brother","sister","friend","people","person","child","baby",
-"city","village","country","island","mountain","river","ocean","beach","forest","park",
-"food","drink","water","juice","milk","bread","rice","noodle","cake","cookie",
-"music","song","dance","movie","video","picture","camera","photo","sound","voice",
-"run","walk","jump","swim","read","write","listen","speak","watch","play",
-"open","close","start","stop","push","pull","turn","move","hold","carry",
-"big","small","long","short","fast","slow","hot","cold","new","old",
-"red","blue","green","yellow","black","white","purple","brown","pink","color",
-"one","two","three","four","five","six","seven","eight","nine","ten",
-"hundred","thousand","number","count","math","plus","minus","times","divide","answer",
-"time","clock","minute","second","hour","early","late","before","after","during",
-"door","window","floor","wall","room","kitchen","bedroom","bathroom","house","home",
-"shirt","pants","shoes","hat","coat","dress","jacket","clothes","wear","style",
-"car","bus","train","bike","plane","boat","travel","trip","ticket","station",
-"phone","call","message","chat","social","media","online","login","logout","account",
-"code","program","robot","data","input","output","system","model","design","build",
-"idea","think","learn","teach","know","understand","remember","forget","practice","improve",
-"question","answer","problem","solution","example","exercise","challenge","goal","plan","result",
-"easy","hard","simple","difficult","important","useful","interesting","boring","fun","cool",
-"win","lose","try","fail","success","effort","focus","attention","practice","repeat",
-"hello","thanks","please","sorry","welcome","goodbye","yes","no","okay","right",
-"capybara","turtle","fox","island","rescue","protect","explore","adventure","danger","escape",
-"science","history","language","english","chinese","math","art","music","sports","health",
-"teacher","student","classmate","group","team","leader","member","share","help","support",
-"clean","dirty","safe","dangerous","strong","weak","smart","kind","brave","honest",
-"sun","moon","star","sky","cloud","rain","wind","storm","weather","season",
-"spring","summer","autumn","winter","hot","warm","cool","cold","temperature","degree",
-"gameplay","control","button","click","drag","drop","scoreboard","ranking","record","history",
-"file","folder","save","load","delete","copy","paste","edit","update","download",
-"upload","search","find","select","enter","exit","menu","option","setting","system"
-];
+    "apple","banana","orange","grape","peach","melon","lemon","cherry","mango","fruit",
+    "dog","cat","bird","fish","tiger","lion","monkey","rabbit","horse","animal",
+    "school","student","teacher","class","lesson","homework","subject","exam","test","study",
+    "book","pen","pencil","paper","desk","chair","bag","ruler","eraser","notebook",
+    "computer","keyboard","mouse","screen","laptop","tablet","internet","website","email","password",
+    "game","player","winner","score","level","stage","start","finish","battle","mission",
+    "happy","sad","angry","excited","tired","hungry","thirsty","funny","cool","great",
+    "morning","afternoon","evening","night","today","tomorrow","yesterday","always","never","sometimes",
+    "family","father","mother","brother","sister","friend","people","person","child","baby",
+    "city","village","country","island","mountain","river","ocean","beach","forest","park",
+    "food","drink","water","juice","milk","bread","rice","noodle","cake","cookie",
+    "music","song","dance","movie","video","picture","camera","photo","sound","voice",
+    "run","walk","jump","swim","read","write","listen","speak","watch","play",
+    "open","close","start","stop","push","pull","turn","move","hold","carry",
+    "big","small","long","short","fast","slow","hot","cold","new","old",
+    "red","blue","green","yellow","black","white","purple","brown","pink","color",
+    "one","two","three","four","five","six","seven","eight","nine","ten",
+    "hundred","thousand","number","count","math","plus","minus","times","divide","answer",
+    "time","clock","minute","second","hour","early","late","before","after","during",
+    "door","window","floor","wall","room","kitchen","bedroom","bathroom","house","home",
+    "shirt","pants","shoes","hat","coat","dress","jacket","clothes","wear","style",
+    "car","bus","train","bike","plane","boat","travel","trip","ticket","station",
+    "phone","call","message","chat","social","media","online","login","logout","account",
+    "code","program","robot","data","input","output","system","model","design","build",
+    "idea","think","learn","teach","know","understand","remember","forget","practice","improve",
+    "question","answer","problem","solution","example","exercise","challenge","goal","plan","result",
+    "easy","hard","simple","difficult","important","useful","interesting","boring","fun","cool",
+    "win","lose","try","fail","success","effort","focus","attention","practice","repeat",
+    "hello","thanks","please","sorry","welcome","goodbye","yes","no","okay","right",
+    "capybara","turtle","fox","island","rescue","protect","explore","adventure","danger","escape",
+    "science","history","language","english","chinese","math","art","music","sports","health",
+    "teacher","student","classmate","group","team","leader","member","share","help","support",
+    "clean","dirty","safe","dangerous","strong","weak","smart","kind","brave","honest",
+    "sun","moon","star","sky","cloud","rain","wind","storm","weather","season",
+    "spring","summer","autumn","winter","hot","warm","cool","cold","temperature","degree",
+    "gameplay","control","button","click","drag","drop","scoreboard","ranking","record","history",
+    "file","folder","save","load","delete","copy","paste","edit","update","download",
+    "upload","search","find","select","enter","exit","menu","option","setting","system"
+  ];
+
+  /* ------------------- 音效系統 (Web Audio API) ------------------- */
+  const AudioContext = window.AudioContext || window.webkitAudioContext;
+  const audioCtx = new AudioContext();
+
+  // 1. 打字聲 (短促的Tick)
+  function playKeySound() {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    const osc = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(800, audioCtx.currentTime); // 頻率
+    gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime); // 音量
+    gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05); // 快速淡出
+    osc.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.05);
+  }
+
+  // 2. 答對單字的聲音 (清脆的叮聲)
+  function playCorrectSound() {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    const osc = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(1200, audioCtx.currentTime);
+    gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.5);
+    osc.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.5);
+  }
+
+  // 3. 遊戲結束的聲音 (Ta-da 兩個音符)
+  function playEndSound() {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    // 第一個音
+    const osc1 = audioCtx.createOscillator();
+    const gain1 = audioCtx.createGain();
+    osc1.type = 'square';
+    osc1.frequency.setValueAtTime(440, audioCtx.currentTime);
+    gain1.gain.setValueAtTime(0.1, audioCtx.currentTime);
+    gain1.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.2);
+    osc1.connect(gain1); gain1.connect(audioCtx.destination);
+    osc1.start(); osc1.stop(audioCtx.currentTime + 0.2);
+
+    // 第二個音 (較高)
+    const osc2 = audioCtx.createOscillator();
+    const gain2 = audioCtx.createGain();
+    osc2.type = 'square';
+    osc2.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.2);
+    gain2.gain.setValueAtTime(0.1, audioCtx.currentTime + 0.2);
+    gain2.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.8);
+    osc2.connect(gain2); gain2.connect(audioCtx.destination);
+    osc2.start(audioCtx.currentTime + 0.2);
+    osc2.stop(audioCtx.currentTime + 0.8);
+  }
+  /* --------------------------------------------------------------- */
 
   // 1. 切換到遊戲頁
   function goToGame() {
+    // 喚醒音效引擎 (瀏覽器安全機制：必須在使用者點擊按鈕時觸發)
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+
     currentUser = document.getElementById("userName").value || "匿名英雄";
     document.getElementById("displayName").textContent = "玩家：" + currentUser;
     document.getElementById("homePage").classList.remove("active-page");
@@ -195,12 +259,22 @@
     document.getElementById("typingInput").value = "";
     document.getElementById("typingInput").disabled = false;
     pickTarget();
+    // 自動聚焦輸入框
+    setTimeout(() => document.getElementById("typingInput").focus(), 100);
   }
 
   function pickTarget() {
     document.getElementById("targetWord").textContent = words[Math.floor(Math.random() * words.length)];
     document.getElementById("typingInput").value = "";
   }
+
+  // 監聽鍵盤按下事件 (用於播放打字聲)
+  document.getElementById("typingInput").addEventListener("keydown", (e) => {
+    // 只針對一般字元或退格鍵播放聲音 (排除 Enter, Tab, Shift 等)
+    if (e.key.length === 1 || e.key === 'Backspace') {
+      playKeySound();
+    }
+  });
 
   // 輸入事件
   document.getElementById("typingInput").addEventListener("input", (e) => {
@@ -209,8 +283,11 @@
       startTime = Date.now();
       startTimer();
     }
+    
+    // 如果輸入正確
     if (e.target.value.trim() === document.getElementById("targetWord").textContent) {
       stats.chars += document.getElementById("targetWord").textContent.length;
+      playCorrectSound(); // 播放答對音效
       pickTarget();
       updateWPM();
     }
@@ -236,9 +313,14 @@
   function endGame() {
     running = false;
     document.getElementById("typingInput").disabled = true;
+    playEndSound(); // 播放結束音效
     let finalWPM = document.getElementById("wpmStat").textContent;
-    alert("時間到！你的速度是: " + finalWPM + " WPM");
-    uploadRecord(finalWPM);
+    
+    // 延遲一點點顯示 Alert，才不會卡住音效播放
+    setTimeout(() => {
+      alert("時間到！你的速度是: " + finalWPM + " WPM");
+      uploadRecord(finalWPM);
+    }, 200);
   }
 
   // GAS: 上傳分數
